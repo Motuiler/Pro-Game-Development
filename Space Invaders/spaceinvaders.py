@@ -21,6 +21,10 @@ yellow=pygame.transform.scale(yellow,(SIZE,SIZE))
 yellow=pygame.transform.rotate(yellow,270)
 yellowrect=pygame.Rect(750,250,SIZE,SIZE)
 silencer=pygame.mixer.Sound(r'C:\Users\Ekaansh\Desktop\Coding Jetlearn\Pro Game Development\Space Invaders\assets\Silencer+Gun Sound.mp3')
+grenade=pygame.mixer.Sound(r'C:\Users\Ekaansh\Desktop\Coding Jetlearn\Pro Game Development\Space Invaders\assets\Grenade+1 Sound.mp3')
+font=pygame.font.SysFont('Arial',50,True,True)
+redhit=pygame.USEREVENT+1
+yellowhit=pygame.USEREVENT+2
 
 border=pygame.Rect(WIDTH/2-10,0,20,HEIGHT)
 clock=pygame.time.Clock()
@@ -50,20 +54,29 @@ def handlebullet(redbullet,yellowbullet):
         bullet.x=bullet.x+BULLETSPEED
         if bullet.x>WIDTH:
             redbullet.remove(bullet)
+        if bullet.colliderect(yellowrect):
+            pygame.event.post(pygame.event.Event(yellowhit))
+            redbullet.remove(bullet)
     for bullet in yellowbullet:
         bullet.x=bullet.x-BULLETSPEED
         if bullet.x<0:
+            yellowbullet.remove(bullet)
+        if bullet.colliderect(redrect):
+            pygame.event.post(pygame.event.Event(redhit))
             yellowbullet.remove(bullet)
 
 def restart():
     redbullet=[]
     yellowbullet=[]  
+    redhealth=10
+    yellowhealth=10
     run=True
     while run:
         clock.tick(FPS)
         window.blit(background,(0,0))
         window.blit(red,(redrect.x,redrect.y))
         window.blit(yellow,(yellowrect.x,yellowrect.y))
+
         pygame.draw.rect(window,(0,0,0),border)
         for bullet1 in redbullet:
             pygame.draw.rect(window,(255,255,255),bullet1)
@@ -84,10 +97,23 @@ def restart():
                     bullet2=pygame.Rect(yellowrect.left,yellowrect.y+yellowrect.height/2,10,5)
                     yellowbullet.append(bullet2)
                     silencer.play()
+
+            if event.type==redhit:
+                redhealth=redhealth-1
+                grenade.play()
+            if event.type==yellowhit:
+                yellowhealth=yellowhealth-1
+                grenade.play()
+
         keys=pygame.key.get_pressed()
         redspaceshipmovement(keys)
         yellowspaceshipmovement(keys)
         handlebullet(redbullet,yellowbullet)
+        redtext=font.render('Health:'+str(redhealth),True,(255,255,255))
+        yellowtext=font.render('Health:'+ str(yellowhealth),True,(255,255,255))
+        window.blit(redtext,(5,5))
+        window.blit(yellowtext,(WIDTH-yellowtext.get_width()-5,5))
+
         pygame.display.update()
 
 
