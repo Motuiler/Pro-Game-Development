@@ -105,6 +105,12 @@ def restart():
                 yellowhealth=yellowhealth-1
                 grenade.play()
 
+        winner=''
+        if yellowhealth==0:
+            winner='Red wins!'
+        if redhealth==0:
+            winner='Yellow wins!'
+
         keys=pygame.key.get_pressed()
         redspaceshipmovement(keys)
         yellowspaceshipmovement(keys)
@@ -113,8 +119,14 @@ def restart():
         yellowtext=font.render('Health:'+ str(yellowhealth),True,(255,255,255))
         window.blit(redtext,(5,5))
         window.blit(yellowtext,(WIDTH-yellowtext.get_width()-5,5))
-
+        if winner!='':
+            win=font.render(winner,True,(255,255,255))
+            window.blit(win,(WIDTH/2-win.get_width()/2,HEIGHT/2))
+            pygame.display.update()
+            pygame.time.delay(5000)
+            run=False
         pygame.display.update()
+    restart()
 
 
 restart()
