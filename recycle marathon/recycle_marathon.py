@@ -80,6 +80,10 @@ while run:
     recycles.draw(window)
     nonrecycles.draw(window)
     timepassed=round(time.time()-starttime)
+    for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                run=False
+                pygame.quit()
     if timepassed>=totaltime:
         if score>=targetscore:
             win=font.render('You Won!',True,(0,0,0))
@@ -91,24 +95,21 @@ while run:
             win1=pygame.image.load(r'C:\Users\Ekaansh\Desktop\Coding Jetlearn\Pro Game Development\recycle marathon\images\loss.png')
             window.blit(win1,(0,0))
             window.blit(win,(WIDTH/2,HEIGHT/2))
-    for event in pygame.event.get():
-        if event.type==pygame.QUIT:
-            run=False
-            pygame.quit()
-    keyspressed=pygame.key.get_pressed()
-    bins.update(keyspressed)
+    else:
+        keyspressed=pygame.key.get_pressed()
+        bins.update(keyspressed)
 
-    recyclable=pygame.sprite.spritecollide(bin,recycles,True)
-    nonrecyclable=pygame.sprite.spritecollide(bin,nonrecycles,True)
-    for i in recyclable:
-        score=score+3
-    for i in nonrecyclable:
-        score=score-5
+        recyclable=pygame.sprite.spritecollide(bin,recycles,True)
+        nonrecyclable=pygame.sprite.spritecollide(bin,nonrecycles,True)
+        for i in recyclable:
+            score=score+3
+        for i in nonrecyclable:
+            score=score-5
 
-    scoretext=font.render(f'Score:{score}',True,(0,0,0))
-    window.blit(scoretext,(5,5))
+        scoretext=font.render(f'Score:{score}',True,(0,0,0))
+        window.blit(scoretext,(5,5))
 
-    timetext=font.render(f'Remaining Time:{totaltime-timepassed}',True,(0,0,0))
-    window.blit(timetext,(WIDTH-timetext.get_width(),5))
+        timetext=font.render(f'Remaining Time:{totaltime-timepassed}',True,(0,0,0))
+        window.blit(timetext,(WIDTH-timetext.get_width(),5))
 
     pygame.display.update()
