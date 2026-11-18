@@ -11,6 +11,13 @@ ground=pygame.image.load(r'C:\Users\Ekaansh\Desktop\Coding Jetlearn\Pro Game Dev
 flying=False
 gameover=False
 
+class Pipes(pygame.sprite.Sprite):
+    def __init__(self,x,y):
+        super().__init__()
+        pipe=pygame.image.load(r'C:\Users\Ekaansh\Desktop\Coding Jetlearn\Pro Game Development\Flappy Bird\assets\pipe.png')
+        self.image=pipe
+        self.rect=self.image.get_rect()
+
 class Bird(pygame.sprite.Sprite):
     def __init__(self,x,y):
         super().__init__()
@@ -52,13 +59,17 @@ class Bird(pygame.sprite.Sprite):
                 if self.index==len(self.birds):
                     self.index=0
             self.image=self.birds[self.index]
-            self.image=pygame.transform.rotate(self.image,self.velocity*-2)
+            self.image=pygame.transform.rotate(self.birds[self.index],self.velocity*-2)
         else:
-            self.image=pygame.transform.rotate(self.image,45)
+            self.image=pygame.transform.rotate(self.birds[self.index],-45)
 
 groupbirds=pygame.sprite.Group()
 bird=Bird(50,HEIGHT/2)
 groupbirds.add(bird)     
+
+grouppipes=pygame.sprite.Group()
+pipe=Pipes(WIDTH/2,HEIGHT/2)
+grouppipes.add(pipe)
 
 clock=pygame.time.Clock()
 fps=60
@@ -71,9 +82,11 @@ while run:
     window.blit(ground,(groundpos,768))
     groupbirds.draw(window)
     groupbirds.update()
-    groundpos=groundpos-scrollspeed
-    if abs(groundpos)>35:
-        groundpos=0
+    grouppipes.draw(window)
+    if not gameover:
+        groundpos=groundpos-scrollspeed
+        if abs(groundpos)>35:
+            groundpos=0
 
     #Check if the bird has hit the ground
     if bird.rect.bottom>=768:
